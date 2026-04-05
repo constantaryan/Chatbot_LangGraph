@@ -1,0 +1,7 @@
+myenv/
+.env/
+env/
+.env
+.env*
+
+
