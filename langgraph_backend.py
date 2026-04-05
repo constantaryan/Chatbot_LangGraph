@@ -8,12 +8,27 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
-
 llm = ChatMistralAI(
     model="mistral-small",  
     temperature=0.7
 )
 
-response = llm.invoke("Explain LangChain in simple words")
-print(response.content)
+class ChatState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]
+
+def chat_node(state: ChatState):
+    messages = state['messages']
+    response = llm.invoke(messages)
+    return {'messages': [response]}
+
+checkpointer = InMemorySaver()
+
+graph = StateGraph(ChatState)
+graph.add_node('chat_node', chat_node)
+graph.add_edge(START, 'chat_node')
+graph.add_edge('chat_node', END)
+
+chatbot = graph.compile(checkpointer=checkpointer)
+
+# response = llm.invoke("Explain LangChain in simple words")
+# print(response.content)
