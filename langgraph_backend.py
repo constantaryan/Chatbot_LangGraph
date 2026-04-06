@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, START, END
 from typing import TypedDict, Annotated
-from langchain_core.messages import BaseMessage
+from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_mistralai import ChatMistralAI
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph.message import add_messages
@@ -30,5 +30,9 @@ graph.add_edge('chat_node', END)
 
 chatbot = graph.compile(checkpointer=checkpointer)
 
-# response = llm.invoke("Explain LangChain in simple words")
-# print(response.content)
+
+# for message_chunk, metadata in stream:
+#     if message_chunk.content:
+#         print(message_chunk.content, end = " ", flush = True)
+
+# print(type(stream))

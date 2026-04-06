@@ -32,12 +32,32 @@ if user_input:
     with st.chat_message('user'):
         st.text(user_input)
 
-    response = chatbot.invoke({'messages':[HumanMessage(content = user_input)]}, config= CONFIG) 
-    ai_message = response['messages'][-1].content   
 
-    st.session_state['message_history'].append({'role': 'assistant','content':ai_message})
+    # response = chatbot.invoke({'messages':[HumanMessage(content = user_input)]}, config= CONFIG) 
+    # ai_message = response['messages'][-1].content   
+
+    
     with st.chat_message('assistant'):
-        st.text(ai_message)
+        ai_message = st.write_stream(
+            # we need a generator for the write_stream function
+            # jo humko stream krna h wo h message_chunk ka content 
+            message_chunk.content for message_chunk, metadata in chatbot.stream(
+                {'messages':[HumanMessage(content = user_input)]},
+                config = CONFIG,
+                stream_mode= 'messages'
+            )
+        )
+    st.session_state['message_history'].append({'role': 'assistant','content':ai_message})
+
+        
+# it will give us an object of a generator
+# for message_chunk, metadata in  chatbot.stream(
+#     {'messages':[HumanMessage(content = 'What is the recipe of momos?')]}, # this is the initial state
+#     config = {'configurable':{'thread_id': 'thread-1'}},
+#     stream_mode= 'messages'
+# ):
+#     if message_chunk.content:
+#         print(message_chunk.content, end = " ", flush = True)
 
 
 
@@ -47,15 +67,3 @@ if user_input:
 
 
 
-# with st.chat_message('user'):
-#     st.text('Hi')
-
-
-# with st.chat_message('assistant'):
-#     st.text('Hi')
-
-# inputval = st.chat_input('Type here')
-
-# if inputval:
-#     with st.chat_message('user'):
-#         st.text(inputval)
