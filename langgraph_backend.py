@@ -12,7 +12,7 @@ load_dotenv()
 
 llm = ChatMistralAI(
     model="mistral-small",  
-    temperature=0.7
+    # temperature=0.7
 )
 
 class ChatState(TypedDict):
@@ -35,12 +35,21 @@ graph.add_edge('chat_node', END)
 chatbot = graph.compile(checkpointer=checkpointer)
 
 
-response = chatbot.invoke({'messages':[HumanMessage(content= 'what is my name?')]}, config = {'configurable':{'thread_id':'thread-2'}})
+# response = chatbot.invoke({'messages':[HumanMessage(content= 'what is my name?')]}, config = {'configurable':{'thread_id':'thread-2'}})
 
-print(response)
+# print(response)
 
 # for message_chunk, metadata in stream:
 #     if message_chunk.content:
 #         print(message_chunk.content, end = " ", flush = True)
 
 # print(type(stream))
+
+# print(checkpointer.list(None)) # it will give us a generator object
+def retreive_all_threads():
+    all_threads = set()
+    for checkpoint in checkpointer.list(None):
+        all_threads.add(checkpoint.config['configurable']['thread_id'])
+
+    return list(all_threads)
+# it will give us all the checkpointers of all the threads
