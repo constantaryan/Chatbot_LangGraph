@@ -3,5 +3,5 @@ myenv/
 env/
 .env
 .env*
-
+*.db
 
