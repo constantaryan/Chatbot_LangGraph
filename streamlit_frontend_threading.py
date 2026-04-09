@@ -48,7 +48,16 @@ if 'chat_threads' not in st.session_state:
 
 add_history(st.session_state['thread_id'])
 
-CONFIG = {'configurable': {'thread_id': st.session_state['thread_id']}}
+# CONFIG = {'configurable': {'thread_id': st.session_state['thread_id']}}
+
+# We added the metadata so that we can trace each thread-id converstion separatly on LangSmith
+CONFIG = {
+    'configurable': {'thread_id':st.session_state['thread_id']},
+    'metadata':{
+        'thread_id':st.session_state['thread_id']
+    },
+    'run_name':'chat_turn'  # just for better readability 
+}
 
 
 
