@@ -4,3 +4,5 @@ langgraph
 dotenv
 streamlit
 langgraph-checkpoint-sqlite
+langchain-community
+ddgs

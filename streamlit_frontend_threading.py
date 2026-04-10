@@ -1,6 +1,6 @@
 import streamlit as st
-from langgraph_backend import chatbot, retreive_all_threads
-from langchain_core.messages import BaseMessage, HumanMessage
+from langgraph_backend_tools import chatbot, retreive_all_threads
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 import uuid # it will be used to generate random thread_id
 
 # ---------------------------------------------------------------------------------
@@ -111,16 +111,28 @@ if user_input:
     # ai_message = response['messages'][-1].content   
 
     
+    # with st.chat_message('assistant'):
+    #     ai_message = st.write_stream(
+    #         # we need a generator for the write_stream function
+    #         # jo humko stream krna h wo h message_chunk ka content 
+    #         message_chunk.content for message_chunk, metadata in chatbot.stream(
+    #             {'messages':[HumanMessage(content = user_input)]},
+    #             config = CONFIG,
+    #             stream_mode= 'messages'
+    #         )
+    #     )
+
     with st.chat_message('assistant'):
-        ai_message = st.write_stream(
-            # we need a generator for the write_stream function
-            # jo humko stream krna h wo h message_chunk ka content 
-            message_chunk.content for message_chunk, metadata in chatbot.stream(
+        def ai_only_stream():
+            for message_chunk, metadata in chatbot.stream(
                 {'messages':[HumanMessage(content = user_input)]},
                 config = CONFIG,
-                stream_mode= 'messages'
-            )
-        )
+                stream_mode='messages'
+            ):
+                if isinstance(message_chunk,AIMessage):
+                    yield message_chunk.content
+
+        ai_message = st.write_stream(ai_only_stream)
     st.session_state['message_history'].append({'role': 'assistant','content':ai_message})
 
         
