@@ -6,3 +6,4 @@ streamlit
 langgraph-checkpoint-sqlite
 langchain-community
 ddgs
+langchain_mcp_adapters

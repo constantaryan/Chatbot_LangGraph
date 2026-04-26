@@ -13,14 +13,8 @@ import requests
 
 load_dotenv()
 
-# -------------------
-# 1. LLM
-# -------------------
 llm = ChatMistralAI()
 
-# -------------------
-# 2. Tools
-# -------------------
 # Tools
 search_tool = DuckDuckGoSearchRun(region="us-en")
 
